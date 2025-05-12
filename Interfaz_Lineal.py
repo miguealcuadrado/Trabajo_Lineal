@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageSequence
 from playsound import playsound 
 
 def Click_PrimerBoton():
@@ -11,16 +11,17 @@ Ventana_Principal.title("Codificación Hamming.")
 Ventana_Principal.geometry("600x650")
 Ventana_Principal.resizable(width=False, height=False)
 
-Imagen1 = Image.open("BI.png")
-Imagen1 = Imagen1.resize((600,650))
+gif= Image.open("Gen-4 Turbo Make this binary code pulse, shimmer, or shift vertically in a seamless loop, green futurist style 341999774.mp4.gif")
+frames = [ImageTk.PhotoImage(frame.copy().resize((600,650))) for frame in ImageSequence.Iterator(gif)]
 
-Imag1 = ImageTk.PhotoImage(Imagen1)
-
-Fondo_Label = tk.Label(Ventana_Principal, image = Imag1)
+Fondo_Label = tk.Label(Ventana_Principal)
 Fondo_Label.place(x = 0, y = 0, relwidth= 1 , relheight= 1)
 
+def animar (i):
+    Fondo_Label.config(image=frames[i])
+    Ventana_Principal.after(100, animar, (i + 1) % len(frames))
 
-
+animar(0)
 
 
 Primer_Frame = tk.Frame(Ventana_Principal, bg="dark slate gray")
