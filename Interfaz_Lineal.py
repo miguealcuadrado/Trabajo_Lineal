@@ -1,4 +1,5 @@
 import tkinter as tk
+import pygame
 from tkinter import ttk
 from PIL import Image, ImageTk, ImageSequence
 from playsound import playsound 
@@ -10,6 +11,10 @@ Ventana_Principal = tk.Tk()
 Ventana_Principal.title("Codificación Hamming.")
 Ventana_Principal.geometry("600x650")
 Ventana_Principal.resizable(width=False, height=False)
+
+pygame.mixer.init()
+pygame.mixer.music.load("116-bpm-oldschool-electronica-18063.mp3")
+pygame.mixer.music.play(-1,0.0)
 
 gif= Image.open("Gen-4 Turbo Make this binary code pulse, shimmer, or shift vertically in a seamless loop, green futurist style 341999774.mp4.gif")
 frames = [ImageTk.PhotoImage(frame.copy().resize((600,650))) for frame in ImageSequence.Iterator(gif)]
@@ -104,7 +109,7 @@ Salida_Informacion.config(state = "disabled")
 Salida_Informacion.pack()
 
 
-Primer_Boton = tk.Button(Cuarto_Frame, image = Img , bg = "dark slate gray" , borderwidth= 3, width= 65, height= 43, command = Click_PrimerBoton)
+Primer_Boton = tk.Button(Cuarto_Frame, image = Img , bg = "dark slate gray" , borderwidth= 3, width= 65, height= 43)
 Primer_Boton.pack()
 Primer_Boton.image = Img
 
