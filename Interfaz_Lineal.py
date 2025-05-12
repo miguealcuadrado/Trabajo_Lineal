@@ -7,14 +7,79 @@ from playsound import playsound
 def Click_PrimerBoton():
     playsound("sfx28-attack-338386.mp3")
 
+pygame.mixer.init()
+pygame.mixer.music.load("116-bpm-oldschool-electronica-18063.mp3")
+pygame.mixer.music.play(-1,0.0)
+
 Ventana_Principal = tk.Tk()
+Ventana_Principal.withdraw()
+
+Ventana_Bienvenida = tk.Toplevel()
+Ventana_Bienvenida.title("BIENVENIDO.")
+Ventana_Bienvenida.geometry("300x150")
+Ventana_Bienvenida.resizable(False, False)
+
+def Cerrar_Bienvenida():
+    pygame.mixer.stop()
+    Ventana_Bienvenida.destroy()
+
+
+
+
+Imagen_Fondo_Bienvenida = Image.open("BI.png").resize((300,150))
+Fondo1 = ImageTk.PhotoImage(Imagen_Fondo_Bienvenida)
+Fondo1_Label = tk.Label(Ventana_Bienvenida, image=Fondo1)
+Fondo1_Label.image = Fondo1
+Fondo1_Label.place(x=0, y=0, relwidth=1, relheight=1)
+
+
+Frame_Central = tk.Frame(Ventana_Bienvenida, bg="dark slate gray")
+Frame_Central.place(x=10, y=20)
+
+
+Imagen_Bienvenida = Image.open("Icono8.png").resize((50, 50))
+imagen_B = ImageTk.PhotoImage(Imagen_Bienvenida)
+Label_Imagen2 = tk.Label(Frame_Central, image=imagen_B, bg="dark slate gray")
+Label_Imagen2.grid(row=0, column=0, padx=5)
+
+def Girar_Imagen(angulo=0):
+    Imagen_Rotada = Imagen_Bienvenida.rotate(angulo)
+    Imagen_B2 = ImageTk.PhotoImage(Imagen_Rotada)
+    Label_Imagen2.config(image=Imagen_B2)
+    Label_Imagen2.image = Imagen_B2
+    Ventana_Bienvenida.after(100, Girar_Imagen, (angulo - 10) % 360)
+
+Girar_Imagen()
+
+
+Mensaje_Bienvenida = "¡Bienvenido, Cyber Usuario!"
+Texto_Label = tk.Label(Frame_Central, text="", font=("Century Gothic", 9, "bold"), fg="beige", bg="dark slate gray", wraplength=180, justify="left")
+Texto_Label.grid(row=0, column=1, padx=5)
+
+def Animar_Texto(i=0):
+    if i <= len(Mensaje_Bienvenida):
+        Texto_Label.config(text=Mensaje_Bienvenida[:i])
+        Ventana_Bienvenida.after(50, Animar_Texto, i + 1)
+
+Animar_Texto()
+
+
+def Pasar_a_principal():
+    Ventana_Bienvenida.destroy()
+    Ventana_Principal.deiconify()
+
+
+Boton_Ingresar = tk.Button(Ventana_Bienvenida, text="Ingresar", font=("Century Gothic", 10), command=Pasar_a_principal)
+Boton_Ingresar.place(relx=0.5, rely=0.85, anchor="center")
+
+
+
+
 Ventana_Principal.title("Codificación Hamming.")
 Ventana_Principal.geometry("600x650")
 Ventana_Principal.resizable(width=False, height=False)
 
-pygame.mixer.init()
-pygame.mixer.music.load("116-bpm-oldschool-electronica-18063.mp3")
-pygame.mixer.music.play(-1,0.0)
+
 
 gif= Image.open("Gen-4 Turbo Make this binary code pulse, shimmer, or shift vertically in a seamless loop, green futurist style 341999774.mp4.gif")
 frames = [ImageTk.PhotoImage(frame.copy().resize((600,650))) for frame in ImageSequence.Iterator(gif)]
@@ -65,8 +130,11 @@ Onceavo_Frame.place(x = 315 , y = 590)
 Doceavo_Frame = tk.Frame(Ventana_Principal, bg = "dark slate gray")
 Doceavo_Frame.place(x = 215, y = 590 )
 
+Frame_13 = tk.Frame(Ventana_Principal, bg = "dark slate gray")
+Frame_13.place(x= 525, y = 605)
 
-Imagen = Image.open("Icono5.png")
+
+Imagen = Image.open("Icono11.png")
 Imagen = Imagen.resize((170,170))
 
 Img = ImageTk.PhotoImage(Imagen)
@@ -78,6 +146,11 @@ Img3 = ImageTk.PhotoImage(Imagen2)
 Imagen3 = Image.open("Icono9.png")
 Imagen3 = Imagen3.resize((50,35))
 Img4 = ImageTk.PhotoImage(Imagen3)
+
+Imagen4 = Image.open("Icono10.png")
+Imagen4 = Imagen4.resize((50,35))
+Img5 = ImageTk.PhotoImage(Imagen4)
+
 
 
 
@@ -124,6 +197,9 @@ Cuarto_Boton.pack()
 
 Quinto_Boton = tk.Button(Doceavo_Frame, image = Img4 ,bg = "dark slate gray" , borderwidth = 2, width= 50 , height = 35)
 Quinto_Boton.pack()
+
+Sexto_Boton = tk.Button(Frame_13, image = Img5 ,bg = "dark slate gray" , borderwidth = 2, width= 50 , height = 35)
+Sexto_Boton.pack()
 
 Opciones = [1 , 2 , 3 , 4]
 
