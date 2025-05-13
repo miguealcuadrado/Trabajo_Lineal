@@ -98,7 +98,7 @@ def Crear_Ventana_Dialogo():
     frame_Texto_D = tk.Frame(Ventana_Dialogo, bg="gray")
     frame_Texto_D.place(x=220, y=280, width=420, height=100)
 
-    Etiqueta_Texto = tk.Label(frame_Texto_D, text="", font=("Century Gothic", 11, "bold"),
+    Etiqueta_Texto = tk.Label(frame_Texto_D, text="", font=("Century Gothic", 13, "bold"),
                               fg="black", bg="gray", wraplength=400, justify="left")
     Etiqueta_Texto.pack(padx=10, pady=10)
 
@@ -138,15 +138,15 @@ def Crear_Ventana_Dialogo():
         pygame.mixer.music.load("116-bpm-oldschool-electronica-18063.mp3")
         pygame.mixer.music.play(-1,fade_ms=1000)
 
-        Ventana_Dialogo.destroy()
+        Ventana_Dialogo.withdraw()
         Ventana_Principal.deiconify()
 
 
-    Boton_Regresar = tk.Button(Ventana_Dialogo, text = "<--" , font = ("Century Gothic", 13) , command = Regresar)
+    Boton_Regresar = tk.Button(Ventana_Dialogo , font = ("Century Gothic", 13) , bg = "blue", command = Regresar)
     Boton_Regresar.place(x = 10, y = 12, width = 35, height = 35)
 
     Boton_Avanzar = tk.Button(Ventana_Dialogo, text="▶", font=("Arial", 12))
-    Boton_Avanzar.place(x=619, y=350, width=30, height=30)
+    Boton_Avanzar.place(x=619, y=355, width=30, height=30)
 
     Ventana_Dialogo.Etiqueta_Texto = Etiqueta_Texto
     Ventana_Dialogo.Boton_Avanzar = Boton_Avanzar
@@ -154,7 +154,7 @@ def Crear_Ventana_Dialogo():
     dialogos = ["¡Hola, Cyber Usuario!",
                 "Te habla Val Pixel, tu compañera digital...",
                 "¿Tienes dudas sobre cómo funciona ENCRIPTACIÓN IUE?",
-                "No te preocupes. Yo te contare cómo funciona nuestro código y de que forma aplicamos Espacios vectoriales y matrices."]
+                "No te preocupes. Yo te contare cómo funciona nuestro código y cómo conseguimos encriptar de forma segura tus mensajes."]
     
     indice = {"valor": 0}  
 
@@ -200,6 +200,31 @@ def animar (i):
 
 animar(0)
 
+def Texto_A_Binario(texto):
+    return "".join(format(ord(char),"08b")for char in texto)
+
+
+def Aplicar_Hamming(binario):
+    if len(binario) % 4 != 0:
+        binario = binario.ljust(len(binario) + (4 - len(binario) % 4), "0")
+
+    bloques = [binario[i:i+4] for i in range(0,len(binario), 4)]
+    resultado = ""
+
+    for bloque in bloques:
+        d1 = int(bloque[0])
+        d2 = int(bloque[1])
+        d3 = int(bloque[2])
+        d4 = int(bloque[3])
+
+        p1 = (d1 + d2 + d4) & 2
+        p2 = (d1 + d3 + d4) & 2
+        p3 = (d2 + d3 + d4) & 2
+
+        hamming = f"{p1}{p2}{d1}{p3}{d2}{d3}{d4}"
+        resultado += hamming
+
+    return resultado
 
 
 
@@ -291,7 +316,96 @@ Salida_Informacion.config(state = "disabled")
 Salida_Informacion.pack()
 
 
-Primer_Boton = tk.Button(Cuarto_Frame, image = Img , bg = "dark slate gray" , borderwidth= 3, width= 65, height= 43)
+def Crear_Ventanas_De_Aviso(Valor):
+
+    # Crear la ventana de aviso
+    Ventana_Avisos = tk.Toplevel()
+    Ventana_Avisos.title("Aviso.")
+    Ventana_Avisos.resizable(False, False)
+
+    if Valor == 1:
+        
+        Texto = Entrada_Informacion.get("1.0", "end-1c")
+
+        
+        if not Texto.strip():
+            Ventana_Avisos.geometry("450x150")
+            fondo34 = Image.open("BI2.png").resize((450, 150))
+            fondo34_tk = ImageTk.PhotoImage(fondo34)
+            fondo34_Label = tk.Label(Ventana_Avisos, image=fondo34_tk)
+            fondo34_Label.image = fondo34_tk
+            fondo34_Label.place(x=0, y=0, relwidth=1, relheight=1)
+
+            
+            HAMMING = 0
+            return  
+
+
+        Ventana_Avisos.geometry("300x150")
+        fondo34 = Image.open("BI2.png").resize((300, 150))
+        fondo34_tk = ImageTk.PhotoImage(fondo34)
+        fondo34_Label = tk.Label(Ventana_Avisos, image=fondo34_tk)
+        fondo34_Label.image = fondo34_tk
+        fondo34_Label.place(x=0, y=0, relwidth=1, relheight=1)
+        
+        BINARIO = Texto_A_Binario(Texto)
+        HAMMING = Aplicar_Hamming(BINARIO)
+
+        
+        Entrada_Informacion.delete("1.0", tk.END)
+
+        
+        Frame_Aviso1 = tk.Frame(Ventana_Avisos, bg="gray")
+        Frame_Aviso1.place(x=25, y=40)
+
+       
+        Imagen_EXITO = Image.open("Icono8.png").resize((50, 50))
+        imagen_B = ImageTk.PhotoImage(Imagen_EXITO)
+        Label_Imagen100 = tk.Label(Frame_Aviso1, image=imagen_B, bg="gray")
+        Label_Imagen100.grid(row=0, column=0, padx=5)
+
+        
+        Mensaje = "¡CÓDIGO ENCRIPTADO!"
+        Texto_Label2 = tk.Label(Frame_Aviso1, text="", font=("Century Gothic", 10, "bold"), fg="beige", bg="gray", wraplength=180, justify="left")
+        Texto_Label2.grid(row=0, column=1, padx=5)
+
+        
+        def Animar_Imagen(angulo=0):
+            Imagen_Rotada = Imagen_EXITO.rotate(angulo)
+            Imagen_B2 = ImageTk.PhotoImage(Imagen_Rotada)
+            Label_Imagen100.config(image=Imagen_B2)
+            Label_Imagen100.image = Imagen_B2
+            Ventana_Avisos.after(100, Animar_Imagen, (angulo - 10) % 360)
+
+        
+        def Animar_Texto(i=0):
+            if i <= len(Mensaje):
+                Texto_Label2.config(text=Mensaje[:i])
+                Ventana_Avisos.after(50, Animar_Texto, i + 1)
+
+        # Llamar las animaciones
+        Animar_Imagen()
+        Animar_Texto()
+
+        
+
+    
+
+    
+        
+
+
+
+
+
+
+
+
+
+
+
+
+Primer_Boton = tk.Button(Cuarto_Frame, image = Img , bg = "dark slate gray" , borderwidth= 3, width= 65, height= 43 , command = lambda: Crear_Ventanas_De_Aviso(1) )
 Primer_Boton.pack()
 Primer_Boton.image = Img
 
