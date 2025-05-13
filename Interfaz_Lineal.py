@@ -81,6 +81,77 @@ Ventana_Principal.resizable(width=False, height=False)
 
 
 
+def Crear_Ventana_Dialogo():
+    Ventana_Dialogo = tk.Toplevel()
+    Ventana_Dialogo.title("Diálogo")
+    Ventana_Dialogo.geometry("700x400")
+    Ventana_Dialogo.resizable(False, False)
+
+    fondo33 = Image.open("BI2.png").resize((700, 400))
+    fondo33_tk = ImageTk.PhotoImage(fondo33)
+    fondo33_Label = tk.Label(Ventana_Dialogo, image=fondo33_tk)
+    fondo33_Label.image = fondo33_tk
+    fondo33_Label.place(x=0, y=0, relwidth=1, relheight=1)
+
+    frame_Texto_D = tk.Frame(Ventana_Dialogo, bg="gray")
+    frame_Texto_D.place(x=220, y=280, width=420, height=100)
+
+    Etiqueta_Texto = tk.Label(frame_Texto_D, text="", font=("Century Gothic", 11, "bold"),
+                              fg="black", bg="gray", wraplength=400, justify="left")
+    Etiqueta_Texto.pack(padx=10, pady=10)
+
+    Personaje_Frame = tk.Label(Ventana_Dialogo, bg="gray")
+    Personaje_Frame.place(x = 40, y = 200, width = 180, height = 180)
+
+    gif = Image.open("Val_Pixel1.gif")
+    frames = [ImageTk.PhotoImage(frame.copy().convert("RGBA")) for frame in ImageSequence.Iterator(gif)]
+
+    def animar_gif(indice=0):
+        frame_actual = frames[indice]
+        Personaje_Frame.config(image=frame_actual)
+        Personaje_Frame.image = frame_actual
+        Ventana_Dialogo.after(100, animar_gif, (indice + 1) % len(frames))
+
+    animar_gif()
+
+    Boton_Avanzar = tk.Button(Ventana_Dialogo, text="▶", font=("Arial", 12))
+    Boton_Avanzar.place(x=619, y=350, width=30, height=30)
+
+    Ventana_Dialogo.Etiqueta_Texto = Etiqueta_Texto
+    Ventana_Dialogo.Boton_Avanzar = Boton_Avanzar
+
+    dialogos = ["¡Hola, Cyber Usuario!",
+                "Te habla Val Pixel, tu compañera digital...",
+                "¿Tienes dudas sobre la teoría de códigos?",
+                "No se diga más... Yo te contare cómo funciona nuestro código"]
+    
+    indice = {"valor": 0}  # Usamos un dict para que sea mutable dentro de funciones anidadas
+
+    def Mostrar_Dialogo():
+        if indice["valor"] >= len(dialogos):
+            Boton_Avanzar.config(state="disabled")
+            return
+
+        texto_actual = dialogos[indice["valor"]]
+
+        def Escribir(i=0):
+            if i <= len(texto_actual):
+                Ventana_Dialogo.Etiqueta_Texto.config(text=texto_actual[:i])
+                Ventana_Dialogo.after(40, Escribir, i + 1)
+
+        Escribir()
+        indice["valor"] += 1
+
+    Boton_Avanzar.config(command=Mostrar_Dialogo)
+    Mostrar_Dialogo()
+
+
+
+
+def Abrir_Ventana_Dialogo():
+    Crear_Ventana_Dialogo()
+
+
 gif= Image.open("Gen-4 Turbo Make this binary code pulse, shimmer, or shift vertically in a seamless loop, green futurist style 341999774.mp4.gif")
 frames = [ImageTk.PhotoImage(frame.copy().resize((600,650))) for frame in ImageSequence.Iterator(gif)]
 
@@ -92,6 +163,8 @@ def animar (i):
     Ventana_Principal.after(100, animar, (i + 1) % len(frames))
 
 animar(0)
+
+
 
 
 Primer_Frame = tk.Frame(Ventana_Principal, bg="dark slate gray")
@@ -198,7 +271,7 @@ Cuarto_Boton.pack()
 Quinto_Boton = tk.Button(Doceavo_Frame, image = Img4 ,bg = "dark slate gray" , borderwidth = 2, width= 50 , height = 35)
 Quinto_Boton.pack()
 
-Sexto_Boton = tk.Button(Frame_13, image = Img5 ,bg = "dark slate gray" , borderwidth = 2, width= 50 , height = 35)
+Sexto_Boton = tk.Button(Frame_13, image = Img5 ,bg = "dark slate gray" , borderwidth = 2, width= 50 , height = 35 , command= Abrir_Ventana_Dialogo)
 Sexto_Boton.pack()
 
 Opciones = [1 , 2 , 3 , 4]
