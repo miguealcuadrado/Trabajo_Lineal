@@ -4,12 +4,13 @@ from tkinter import ttk
 from PIL import Image, ImageTk, ImageSequence
 from playsound import playsound 
 
-def Click_PrimerBoton():
-    playsound("sfx28-attack-338386.mp3")
+
+
+
 
 pygame.mixer.init()
 pygame.mixer.music.load("116-bpm-oldschool-electronica-18063.mp3")
-pygame.mixer.music.play(-1,0.0)
+pygame.mixer.music.play(-1)
 
 Ventana_Principal = tk.Tk()
 Ventana_Principal.withdraw()
@@ -19,11 +20,11 @@ Ventana_Bienvenida.title("BIENVENIDO.")
 Ventana_Bienvenida.geometry("300x150")
 Ventana_Bienvenida.resizable(False, False)
 
+
+
 def Cerrar_Bienvenida():
     pygame.mixer.stop()
     Ventana_Bienvenida.destroy()
-
-
 
 
 Imagen_Fondo_Bienvenida = Image.open("BI.png").resize((300,150))
@@ -86,6 +87,7 @@ def Crear_Ventana_Dialogo():
     Ventana_Dialogo.title("Diálogo")
     Ventana_Dialogo.geometry("700x400")
     Ventana_Dialogo.resizable(False, False)
+    
 
     fondo33 = Image.open("BI2.png").resize((700, 400))
     fondo33_tk = ImageTk.PhotoImage(fondo33)
@@ -100,6 +102,16 @@ def Crear_Ventana_Dialogo():
                               fg="black", bg="gray", wraplength=400, justify="left")
     Etiqueta_Texto.pack(padx=10, pady=10)
 
+    Titulo_Frame = tk.Frame(Ventana_Dialogo, bg = "gray")
+    Titulo_Frame.place(x = 230 , y = 12)
+
+    Titulo3 = tk.Label(Titulo_Frame, text = "Cyber", font = ("Century Gothic" , 20, "bold") , fg = "beige" , bg = "gray")
+    Titulo3.pack(side = "left")
+
+    Titulo4 = tk.Label(Titulo_Frame, text = "Cuestiones", font = ("Century Gothic" , 20, "bold") , fg = "orange" , bg = "gray")
+    Titulo4.pack(side = "left")
+    
+    
     Personaje_Frame = tk.Label(Ventana_Dialogo, bg="gray")
     Personaje_Frame.place(x = 40, y = 200, width = 180, height = 180)
 
@@ -114,6 +126,25 @@ def Crear_Ventana_Dialogo():
 
     animar_gif()
 
+    def Cerrar_Ventana():
+        pygame.mixer.music.stop()
+        Ventana_Dialogo.destroy()
+
+    Ventana_Dialogo.protocol("WM_DELETE_WINDOW" , Cerrar_Ventana)
+
+    def Regresar():
+        pygame.mixer.music.fadeout(1000)
+        pygame.time.delay(1000)
+        pygame.mixer.music.load("116-bpm-oldschool-electronica-18063.mp3")
+        pygame.mixer.music.play(-1,fade_ms=1000)
+
+        Ventana_Dialogo.destroy()
+        Ventana_Principal.deiconify()
+
+
+    Boton_Regresar = tk.Button(Ventana_Dialogo, text = "<--" , font = ("Century Gothic", 13) , command = Regresar)
+    Boton_Regresar.place(x = 10, y = 12, width = 35, height = 35)
+
     Boton_Avanzar = tk.Button(Ventana_Dialogo, text="▶", font=("Arial", 12))
     Boton_Avanzar.place(x=619, y=350, width=30, height=30)
 
@@ -122,10 +153,10 @@ def Crear_Ventana_Dialogo():
 
     dialogos = ["¡Hola, Cyber Usuario!",
                 "Te habla Val Pixel, tu compañera digital...",
-                "¿Tienes dudas sobre la teoría de códigos?",
-                "No se diga más... Yo te contare cómo funciona nuestro código"]
+                "¿Tienes dudas sobre cómo funciona ENCRIPTACIÓN IUE?",
+                "No te preocupes. Yo te contare cómo funciona nuestro código y de que forma aplicamos Espacios vectoriales y matrices."]
     
-    indice = {"valor": 0}  # Usamos un dict para que sea mutable dentro de funciones anidadas
+    indice = {"valor": 0}  
 
     def Mostrar_Dialogo():
         if indice["valor"] >= len(dialogos):
@@ -145,10 +176,15 @@ def Crear_Ventana_Dialogo():
     Boton_Avanzar.config(command=Mostrar_Dialogo)
     Mostrar_Dialogo()
 
-
-
+    
 
 def Abrir_Ventana_Dialogo():
+    Ventana_Principal.withdraw()
+    pygame.mixer.music.fadeout(1000)
+    pygame.time.delay(1000)
+    pygame.mixer.music.load("8bit-music-for-game-68698.mp3")
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1,fade_ms=1000)
     Crear_Ventana_Dialogo()
 
 
