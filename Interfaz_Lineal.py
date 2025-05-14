@@ -562,24 +562,60 @@ def Crear_Ventanas_De_Aviso(Valor):
 
             Ventana_Avisos.protocol("WM_DELETE_WINDOW" , Cerra_Aviso)
 
-            Frame_Gif = tk.Frame(Ventana_Avisos, bg = "gray" , width= 150 , height = 130)
-            Frame_Gif.place(x = 10, y = 10)
+            Frame1_Gif = tk.Frame(Ventana_Avisos, bg = "gray" , width= 150 , height = 130)
+            Frame1_Gif.place(x = 10, y = 10)
 
-            gif = Image.open("Tomas.gif")
+            gif1 = Image.open("Tomas.gif")
 
             Personaje_GIF = tk.PhotoImage("Tomas.gif")
-            Label_NPC = tk.Label(Frame_Gif, image = Personaje_GIF, bg = "purple")
+            Label_NPC = tk.Label(Frame1_Gif, image = Personaje_GIF, bg = "purple")
             Label_NPC.image = Personaje_GIF
             Label_NPC.pack(expand =True)
 
-            def Reproducir(frame = 0):
-                gif.seek(frame)
-                Fotogramas = ImageTk.PhotoImage(gif.copy())
+            def Reproducir1(frame = 0):
+                gif1.seek(frame)
+                Fotogramas = ImageTk.PhotoImage(gif1.copy())
                 Label_NPC.config(image = Fotogramas)
                 Label_NPC.image = Fotogramas
 
-            Reproducir()
+                frame = (frame + 1) % gif1.n_frames
+                Ventana_Avisos.after(100, Reproducir1, frame)
 
+            Framee_Texto = tk.Frame(Ventana_Avisos, bg="gray", width=265, height=85, bd = 2, relief = "ridge")
+            Framee_Texto.place(x=155, y=56) 
+
+            Mensajes = ["¿Qué tal, Cyber usuario?..." , "Veo que no entendiste al bobo de Sebastián..." ,
+                 "No te preocupes, me pasa igual cuando estoy con él en los exámenes..." , "¡Ya tienes el mensaje codificado!" ,
+                 "Solo debes escoger la cantidad de errores que quieres simular en la codificación."     
+                        ]
+            
+            indice = [0]
+
+
+            Textoo_Label = tk.Label(Framee_Texto, text="", font=("Century Gothic", 10 , "bold"),fg="black", bg="gray", justify="left", wraplength=250)
+            Textoo_Label.place(x=10, y=15)
+
+            def Animaar_Texto(texto, i=0):
+                if i <= len(texto):
+                    Textoo_Label.config(text=texto[:i])
+                    Ventana_Avisos.after(40, lambda: Animaar_Texto(texto, i + 1))
+
+            def mostrar_Siguiente():
+                if indice[0] < len(Mensajes):
+                    Animaar_Texto(Mensajes[indice[0]])
+                    indice[0] += 1
+                else:
+                    Textoo_Label.config(text="Dale parce, vamos con una buena codificación...")
+                
+            Botoon_Sig = tk.Button(
+            Ventana_Avisos, text="▶", command=mostrar_Siguiente,
+            bg="gray20", fg="white", font=("Arial", 10, "bold"),
+            width=2, height=1, borderwidth=0, relief="flat",
+            activebackground="gray30")
+            Botoon_Sig.place( x=400, y=122)
+
+            Reproducir1()
+            mostrar_Siguiente()
             
             
 
