@@ -95,8 +95,8 @@ def Crear_Ventana_Dialogo():
     fondo33_Label.image = fondo33_tk
     fondo33_Label.place(x=0, y=0, relwidth=1, relheight=1)
 
-    frame_Texto_D = tk.Frame(Ventana_Dialogo, bg="gray")
-    frame_Texto_D.place(x=220, y=280, width=420, height=100)
+    frame_Texto_D = tk.Frame(Ventana_Dialogo, bg="gray", relief = "ridge")
+    frame_Texto_D.place(x=250, y=280, width=420, height=100)
 
     Etiqueta_Texto = tk.Label(frame_Texto_D, text="", font=("Century Gothic", 13, "bold"),
                               fg="black", bg="gray", wraplength=400, justify="left")
@@ -115,7 +115,7 @@ def Crear_Ventana_Dialogo():
     Personaje_Frame = tk.Label(Ventana_Dialogo, bg="gray")
     Personaje_Frame.place(x = 40, y = 200, width = 180, height = 180)
 
-    gif = Image.open("Val_Pixel1.gif")
+    gif = Image.open("Val_pixel (1).gif")
     frames = [ImageTk.PhotoImage(frame.copy().convert("RGBA")) for frame in ImageSequence.Iterator(gif)]
 
     def animar_gif(indice=0):
@@ -146,7 +146,7 @@ def Crear_Ventana_Dialogo():
     Boton_Regresar.place(x = 10, y = 12, width = 35, height = 35)
 
     Boton_Avanzar = tk.Button(Ventana_Dialogo, text="▶", font=("Arial", 12))
-    Boton_Avanzar.place(x=619, y=355, width=30, height=30)
+    Boton_Avanzar.place(x=649, y=355, width=30, height=30)
 
     Ventana_Dialogo.Etiqueta_Texto = Etiqueta_Texto
     Ventana_Dialogo.Boton_Avanzar = Boton_Avanzar
@@ -315,6 +315,14 @@ Salida_Informacion = tk.Text(Decimo_Frame,  font = ("Neuropol X" , 10 , "bold") 
 Salida_Informacion.config(state = "disabled")
 Salida_Informacion.pack()
 
+Opciones = [1 , 2 , 3 , 4]
+
+Caja_Opciones = ttk.Combobox(Ventana_Principal, values = Opciones, width= 20 , state = "readonly")
+Caja_Opciones.place(x = 295 , y = 360)
+Estilo = ttk.Style()
+Estilo.theme_use("default")
+Estilo.configure("TCombobox" ,fieldbackground = "gray",  arrowcolor = "beige" , font = ("Century Gothic" , 20 , "bold"))
+
 
 def Crear_Ventanas_De_Aviso(Valor):
 
@@ -329,20 +337,83 @@ def Crear_Ventanas_De_Aviso(Valor):
 
         
         if not Texto.strip():
+            Ventana_Principal.withdraw()
             Ventana_Avisos.geometry("450x150")
-            fondo34 = Image.open("BI2.png").resize((450, 150))
+            fondo34 = Image.open("BI3.png").resize((450, 150))
             fondo34_tk = ImageTk.PhotoImage(fondo34)
             fondo34_Label = tk.Label(Ventana_Avisos, image=fondo34_tk)
             fondo34_Label.image = fondo34_tk
             fondo34_Label.place(x=0, y=0, relwidth=1, relheight=1)
 
+            def Cerra_Aviso():
+                Ventana_Avisos.destroy()
+                Ventana_Principal.wm_deiconify()
+
+            Ventana_Avisos.protocol("WM_DELETE_WINDOW" , Cerra_Aviso)
+
+            Frame_Gif = tk.Frame(Ventana_Avisos, bg = "gray" , width= 150 , height = 130)
+            Frame_Gif.place(x = 10, y = 10)
+
+            gif = Image.open("Migue_Pixel.gif")
+
+            Personaje_GIF = tk.PhotoImage("Migue_Pixel.gif")
+            Label_NPC = tk.Label(Frame_Gif, image = Personaje_GIF, bg = "yellow")
+            Label_NPC.image = Personaje_GIF
+            Label_NPC.pack(expand =True)
+
+            def Reproducir(frame = 0):
+                gif.seek(frame)
+                Fotogramas = ImageTk.PhotoImage(gif.copy())
+                Label_NPC.config(image = Fotogramas)
+                Label_NPC.image = Fotogramas
+
+                frame = (frame + 1) % gif.n_frames
+                Ventana_Avisos.after(100, Reproducir, frame)
+
+           
+            Framee_Texto = tk.Frame(Ventana_Avisos, bg="gray", width=255, height=80, bd = 2, relief = "ridge")
+            Framee_Texto.place(x=160, y=60)  # Ajustado para quedar justo al lado del GIF
+
+            mensajes = [
+                "¡No puedo codificar el vacío!",
+                "¿Acaso querés encriptar la nada?",
+                "Recuerda, cyber-usuario: escribí tu mensaje y luego oprimí el botón."]
+            indice = [0]
+
+
+            Textoo_Label = tk.Label(Framee_Texto, text="", font=("Century Gothic", 10 , "bold"),fg="black", bg="gray", justify="left", wraplength=250)
+            Textoo_Label.place(x=10, y=15)
+
+            def Animaar_Texto(texto, i=0):
+                if i <= len(texto):
+                    Textoo_Label.config(text=texto[:i])
+                    Ventana_Avisos.after(40, lambda: Animaar_Texto(texto, i + 1))
+
+            def mostrar_Siguiente():
+                if indice[0] < len(mensajes):
+                    Animaar_Texto(mensajes[indice[0]])
+                    indice[0] += 1
+                else:
+                    Textoo_Label.config(text="Dale, escribí algo e intentá nuevamente.")
+
+
+            Botoon_Sig = tk.Button(
+            Ventana_Avisos, text="▶", command=mostrar_Siguiente,
+            bg="gray20", fg="white", font=("Arial", 10, "bold"),
+            width=2, height=1, borderwidth=0, relief="flat",
+            activebackground="gray30")
+            Botoon_Sig.place( x=396, y=122)
+
             
-            HAMMING = 0
+            Reproducir()
+            mostrar_Siguiente()
+            
+            HAMMING = "null"
             return  
 
 
         Ventana_Avisos.geometry("300x150")
-        fondo34 = Image.open("BI2.png").resize((300, 150))
+        fondo34 = Image.open("BI3.png").resize((300, 150))
         fondo34_tk = ImageTk.PhotoImage(fondo34)
         fondo34_Label = tk.Label(Ventana_Avisos, image=fondo34_tk)
         fondo34_Label.image = fondo34_tk
@@ -352,7 +423,7 @@ def Crear_Ventanas_De_Aviso(Valor):
         HAMMING = Aplicar_Hamming(BINARIO)
 
         
-        Entrada_Informacion.delete("1.0", tk.END)
+        #Entrada_Informacion.delete("1.0", tk.END)
 
         
         Frame_Aviso1 = tk.Frame(Ventana_Avisos, bg="gray")
@@ -386,6 +457,10 @@ def Crear_Ventanas_De_Aviso(Valor):
         # Llamar las animaciones
         Animar_Imagen()
         Animar_Texto()
+
+        return HAMMING
+
+Codigo_Hamming = HAMMING    
 
         
 
@@ -424,13 +499,7 @@ Quinto_Boton.pack()
 Sexto_Boton = tk.Button(Frame_13, image = Img5 ,bg = "dark slate gray" , borderwidth = 2, width= 50 , height = 35 , command= Abrir_Ventana_Dialogo)
 Sexto_Boton.pack()
 
-Opciones = [1 , 2 , 3 , 4]
 
-Caja_Opciones = ttk.Combobox(Ventana_Principal, values = Opciones, width= 20 , state = "readonly")
-Caja_Opciones.place(x = 295 , y = 360)
-Estilo = ttk.Style()
-Estilo.theme_use("default")
-Estilo.configure("TCombobox" ,fieldbackground = "gray",  arrowcolor = "beige" , font = ("Century Gothic" , 20 , "bold"))
 
 
 
