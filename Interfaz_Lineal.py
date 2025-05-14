@@ -1,4 +1,5 @@
 import tkinter as tk
+import random
 import pygame
 from tkinter import ttk
 from PIL import Image, ImageTk, ImageSequence
@@ -458,11 +459,14 @@ def Crear_Ventanas_De_Aviso(Valor):
                 Texto_Label2.config(text=Mensaje[:i])
                 Ventana_Avisos.after(50, Animar_Texto, i + 1)
 
-        # Llamar las animaciones
+        
         Animar_Imagen()
         Animar_Texto()
-        
 
+    
+
+        
+        
         
 
       
@@ -616,10 +620,53 @@ def Crear_Ventanas_De_Aviso(Valor):
 
             Reproducir1()
             mostrar_Siguiente()
-            
+
             
 
+    
+
+
+            
+        elif HAMMING_GLOBAL != "null" and Valor != "": 
+
+            Ventana_Avisos.geometry("300x150")
+            fondo34 = Image.open("BI4 (2).png").resize((300, 150))
+            fondo34_tk = ImageTk.PhotoImage(fondo34)
+            fondo34_Label = tk.Label(Ventana_Avisos, image=fondo34_tk)
+            fondo34_Label.image = fondo34_tk
+            fondo34_Label.place(x=0, y=0, relwidth=1, relheight=1)
+
+            Frame_Aviso1 = tk.Frame(Ventana_Avisos, bg="gray")
+            Frame_Aviso1.place(x=25, y=40)
+                    
+
+            Imagen_EXITO = Image.open("Icono8.png").resize((50, 50))
+            imagen_B = ImageTk.PhotoImage(Imagen_EXITO)
+            Label_Imagen100 = tk.Label(Frame_Aviso1, image=imagen_B, bg="gray")
+            Label_Imagen100.grid(row=0, column=0, padx=5)
+
+            
+            Mensaje = "¡ERRORES INTEGRADOS!"
+            Texto_Label2 = tk.Label(Frame_Aviso1, text="", font=("Century Gothic", 10, "bold"), fg="beige", bg="gray", wraplength=180, justify="left")
+            Texto_Label2.grid(row=0, column=1, padx=5)
+
+            
+            def Animar_Imagen(angulo=0):
+                Imagen_Rotada = Imagen_EXITO.rotate(angulo)
+                Imagen_B2 = ImageTk.PhotoImage(Imagen_Rotada)
+                Label_Imagen100.config(image=Imagen_B2)
+                Label_Imagen100.image = Imagen_B2
+                Ventana_Avisos.after(100, Animar_Imagen, (angulo - 10) % 360)
+
+            def Animar_Texto(i=0):
+                if i <= len(Mensaje):
+                    Texto_Label2.config(text=Mensaje[:i])
+                    Ventana_Avisos.after(50, Animar_Texto, i + 1)
+
         
+            Animar_Imagen()
+            Animar_Texto()
+            
 
     
 
