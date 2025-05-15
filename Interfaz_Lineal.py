@@ -218,9 +218,9 @@ def Aplicar_Hamming(binario):
         d3 = int(bloque[2])
         d4 = int(bloque[3])
 
-        p1 = (d1 + d2 + d4) & 2
-        p2 = (d1 + d3 + d4) & 2
-        p3 = (d2 + d3 + d4) & 2
+        p1 = (d1 ^ d2 ^ d4) 
+        p2 = (d1 ^ d3 ^ d4) 
+        p3 = (d2 ^ d3 ^ d4) 
 
         hamming = f"{p1}{p2}{d1}{p3}{d2}{d3}{d4}"
         resultado += hamming
@@ -426,6 +426,7 @@ def Crear_Ventanas_De_Aviso(Valor):
         
         BINARIO = Texto_A_Binario(Texto)
         HAMMING_GLOBAL = Aplicar_Hamming(BINARIO)
+        print(HAMMING_GLOBAL)
 
         
         #Entrada_Informacion.delete("1.0", tk.END)
@@ -463,15 +464,8 @@ def Crear_Ventanas_De_Aviso(Valor):
         Animar_Imagen()
         Animar_Texto()
 
-    
 
-        
-        
-        
-
-      
-
-    if Valor == 2:
+    elif Valor == 2:
         Valor = Caja_Opciones.get()
 
         if HAMMING_GLOBAL == "null":
@@ -620,12 +614,6 @@ def Crear_Ventanas_De_Aviso(Valor):
 
             Reproducir1()
             mostrar_Siguiente()
-
-            
-
-    
-
-
             
         elif HAMMING_GLOBAL != "null" and Valor != "": 
 
@@ -666,8 +654,94 @@ def Crear_Ventanas_De_Aviso(Valor):
         
             Animar_Imagen()
             Animar_Texto()
-            
 
+            Errores_a_Insertar = int(Caja_Opciones.get())
+            LISTA_BITS = list(HAMMING_GLOBAL)
+            posiciones = random.sample(range(len(LISTA_BITS)) ,Errores_a_Insertar)
+
+            for pos in posiciones:
+
+                if LISTA_BITS[pos] == "1":
+                    LISTA_BITS[pos] = "0"
+
+                else:
+                    LISTA_BITS[pos] = "1"
+
+            HAMMING_GLOBAL = "".join(LISTA_BITS)
+            print(HAMMING_GLOBAL)
+            
+    elif Valor == 3:
+
+        if HAMMING_GLOBAL == "null":
+            Ventana_Principal.withdraw
+            Ventana_Principal.withdraw()
+            Ventana_Avisos.geometry("450x150")
+            fondo34 = Image.open("BI5.png").resize((450, 150))
+            fondo34_tk = ImageTk.PhotoImage(fondo34)
+            fondo34_Label = tk.Label(Ventana_Avisos, image=fondo34_tk)
+            fondo34_Label.image = fondo34_tk
+            fondo34_Label.place(x=0, y=0, relwidth=1, relheight=1)
+
+            def Cerra_Aviso():
+                Ventana_Avisos.destroy()
+                Ventana_Principal.wm_deiconify()
+
+            Ventana_Avisos.protocol("WM_DELETE_WINDOW" , Cerra_Aviso)
+
+            Frame1_Gif = tk.Frame(Ventana_Avisos, bg = "gray" , width= 150 , height = 130)
+            Frame1_Gif.place(x = 10, y = 10)
+
+            gif1 = Image.open("Valery.gif")
+
+            Personaje_GIF = tk.PhotoImage("Valery.gif")
+            Label_NPC = tk.Label(Frame1_Gif, image = Personaje_GIF, bg = "pink")
+            Label_NPC.image = Personaje_GIF
+            Label_NPC.pack(expand =True)
+
+            def Reproducir1(frame = 0):
+                gif1.seek(frame)
+                Fotogramas = ImageTk.PhotoImage(gif1.copy())
+                Label_NPC.config(image = Fotogramas)
+                Label_NPC.image = Fotogramas
+
+                frame = (frame + 1) % gif1.n_frames
+                Ventana_Avisos.after(100, Reproducir1, frame)
+
+            Framee_Texto = tk.Frame(Ventana_Avisos, bg="gray", width=265, height=85, bd = 2, relief = "ridge")
+            Framee_Texto.place(x=155, y=56) 
+
+            Mensajes = ["¡¡Que gusto verte, Cyber usuario!!" , "Veo que intentas insertar un código en el recuadro de abajo..." ,
+                 "Upss. Visualizo un problema, aún no has ingresado el mensaje..." , "No te preocupes, es super sencillo de solucionar..." ,
+                       ]
+            
+            indice = [0]
+
+
+            Textoo_Label = tk.Label(Framee_Texto, text="", font=("Century Gothic", 10 , "bold"),fg="black", bg="gray", justify="left", wraplength=250)
+            Textoo_Label.place(x=10, y=15)
+
+            def Animaar_Texto(texto, i=0):
+                if i <= len(texto):
+                    Textoo_Label.config(text=texto[:i])
+                    Ventana_Avisos.after(40, lambda: Animaar_Texto(texto, i + 1))
+
+            def mostrar_Siguiente():
+                if indice[0] < len(Mensajes):
+                    Animaar_Texto(Mensajes[indice[0]])
+                    indice[0] += 1
+                else:
+                    Textoo_Label.config(text="Escribe el mensaje y oprime el boton, ¡¡eso es todo!!...")
+                
+            Botoon_Sig = tk.Button(
+            Ventana_Avisos, text="▶", command=mostrar_Siguiente,
+            bg="gray20", fg="white", font=("Arial", 10, "bold"),
+            width=2, height=1, borderwidth=0, relief="flat",
+            activebackground="gray30")
+            Botoon_Sig.place( x=400, y=122)
+
+            Reproducir1()
+            mostrar_Siguiente()
+            
     
 
     
@@ -691,7 +765,7 @@ Primer_Boton.image = Img
 Segundo_Boton = tk.Button(Octavo_Frame, text = "Generar errores", font = ("Century Gothic ", 10 , "bold") , fg = "beige" , bg = "gray" , borderwidth= 3, width= 13, command = lambda: Crear_Ventanas_De_Aviso(2))
 Segundo_Boton.pack()
 
-Tercer_Boton = tk.Button(Noveno_Frame, text = "Insertar", font = ("Century Gothic ", 10 , "bold") , fg = "beige" , bg = "gray" , borderwidth= 3, width= 13)
+Tercer_Boton = tk.Button(Noveno_Frame, text = "Insertar", font = ("Century Gothic ", 10 , "bold") , fg = "beige" , bg = "gray" , borderwidth= 3, width= 13, command = lambda: Crear_Ventanas_De_Aviso(3) )
 Tercer_Boton.pack()
 
 Cuarto_Boton = tk.Button(Onceavo_Frame, image = Img3 ,bg = "dark slate gray" , borderwidth = 2, width= 50 , height = 35 )
