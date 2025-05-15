@@ -96,88 +96,20 @@ def Crear_Ventana_Dialogo():
     fondo33_Label.image = fondo33_tk
     fondo33_Label.place(x=0, y=0, relwidth=1, relheight=1)
 
-    frame_Texto_D = tk.Frame(Ventana_Dialogo, bg="gray", relief = "ridge")
-    frame_Texto_D.place(x=250, y=280, width=420, height=100)
-
-    Etiqueta_Texto = tk.Label(frame_Texto_D, text="", font=("Century Gothic", 13, "bold"),
-                              fg="black", bg="gray", wraplength=400, justify="left")
-    Etiqueta_Texto.pack(padx=10, pady=10)
-
-    Titulo_Frame = tk.Frame(Ventana_Dialogo, bg = "gray")
-    Titulo_Frame.place(x = 230 , y = 12)
-
-    Titulo3 = tk.Label(Titulo_Frame, text = "Cyber", font = ("Century Gothic" , 20, "bold") , fg = "beige" , bg = "gray")
-    Titulo3.pack(side = "left")
-
-    Titulo4 = tk.Label(Titulo_Frame, text = "Cuestiones", font = ("Century Gothic" , 20, "bold") , fg = "orange" , bg = "gray")
-    Titulo4.pack(side = "left")
     
-    
-    Personaje_Frame = tk.Label(Ventana_Dialogo, bg="gray")
-    Personaje_Frame.place(x = 40, y = 200, width = 180, height = 180)
-
-    gif = Image.open("Val_pixel (1).gif")
-    frames = [ImageTk.PhotoImage(frame.copy().convert("RGBA")) for frame in ImageSequence.Iterator(gif)]
-
-    def animar_gif(indice=0):
-        frame_actual = frames[indice]
-        Personaje_Frame.config(image=frame_actual)
-        Personaje_Frame.image = frame_actual
-        Ventana_Dialogo.after(100, animar_gif, (indice + 1) % len(frames))
-
-    animar_gif()
-
     def Cerrar_Ventana():
         pygame.mixer.music.stop()
         Ventana_Dialogo.destroy()
-
-    Ventana_Dialogo.protocol("WM_DELETE_WINDOW" , Cerrar_Ventana)
-
-    def Regresar():
+        Ventana_Principal.wm_deiconify()
         pygame.mixer.music.fadeout(1000)
         pygame.time.delay(1000)
         pygame.mixer.music.load("116-bpm-oldschool-electronica-18063.mp3")
         pygame.mixer.music.play(-1,fade_ms=1000)
 
-        Ventana_Dialogo.withdraw()
-        Ventana_Principal.deiconify()
-
-
-    Boton_Regresar = tk.Button(Ventana_Dialogo , font = ("Century Gothic", 13) , bg = "blue", command = Regresar)
-    Boton_Regresar.place(x = 10, y = 12, width = 35, height = 35)
-
-    Boton_Avanzar = tk.Button(Ventana_Dialogo, text="▶", font=("Arial", 12))
-    Boton_Avanzar.place(x=649, y=355, width=30, height=30)
-
-    Ventana_Dialogo.Etiqueta_Texto = Etiqueta_Texto
-    Ventana_Dialogo.Boton_Avanzar = Boton_Avanzar
-
-    dialogos = ["¡Hola, Cyber Usuario!",
-                "Te habla Val Pixel, tu compañera digital...",
-                "¿Tienes dudas sobre cómo funciona ENCRIPTACIÓN IUE?",
-                "No te preocupes. Yo te contare cómo funciona nuestro código y cómo conseguimos encriptar de forma segura tus mensajes."]
-    
-    indice = {"valor": 0}  
-
-    def Mostrar_Dialogo():
-        if indice["valor"] >= len(dialogos):
-            Boton_Avanzar.config(state="disabled")
-            return
-
-        texto_actual = dialogos[indice["valor"]]
-
-        def Escribir(i=0):
-            if i <= len(texto_actual):
-                Ventana_Dialogo.Etiqueta_Texto.config(text=texto_actual[:i])
-                Ventana_Dialogo.after(40, Escribir, i + 1)
-
-        Escribir()
-        indice["valor"] += 1
-
-    Boton_Avanzar.config(command=Mostrar_Dialogo)
-    Mostrar_Dialogo()
+    Ventana_Dialogo.protocol("WM_DELETE_WINDOW" , Cerrar_Ventana)
 
     
+
 
 def Abrir_Ventana_Dialogo():
     Ventana_Principal.withdraw()
@@ -742,7 +674,8 @@ def Crear_Ventanas_De_Aviso(Valor):
             Reproducir1()
             mostrar_Siguiente()
             
-    
+        
+
 
     
         
