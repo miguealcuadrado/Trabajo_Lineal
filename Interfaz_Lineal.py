@@ -1,4 +1,5 @@
 import tkinter as tk
+import threading
 import random
 import pygame
 from tkinter import ttk
@@ -7,6 +8,7 @@ from playsound import playsound
 
 HAMMING_GLOBAL = "null"
 CORRECION = 0
+BARRA = 0
 
 
 
@@ -16,6 +18,8 @@ pygame.mixer.music.play(-1)
 
 Ventana_Principal = tk.Tk()
 Ventana_Principal.withdraw()
+
+
 
 Ventana_Bienvenida = tk.Toplevel()
 Ventana_Bienvenida.title("BIENVENIDO.")
@@ -81,6 +85,10 @@ Boton_Ingresar.place(relx=0.5, rely=0.85, anchor="center")
 Ventana_Principal.title("Codificación Hamming.")
 Ventana_Principal.geometry("600x650")
 Ventana_Principal.resizable(width=False, height=False)
+
+style = ttk.Style()
+style.theme_use("clam")
+style.configure("Myneon.Vertical.TProgressbar" , troughcolor= "#1a0000" , background = "#ff1414" , thickness = 24, bordercolor = "#ff00ff" , lightcolor = "#ff00ff" , darkcolor = "#50039c")
 
 
 
@@ -159,6 +167,19 @@ def Aplicar_Hamming(binario):
         resultado += hamming
 
     return resultado
+
+progreso_valor = 0
+barra_progreso = ttk.Progressbar(Ventana_Principal, style= "Myneon.Vertical.TProgressbar" , orient = "vertical" , length = 250, mode = "determinate")
+barra_progreso.place(x = 570, y = 260)
+barra_progreso["maximum"] = 100
+barra_progreso["value"] = progreso_valor
+
+def Aumentar_barra(Cantidad):
+    global progreso_valor
+    progreso_valor += Cantidad
+    if progreso_valor > 100:
+        progreso_valor = 100
+    barra_progreso["value"] = progreso_valor
 
 
 
@@ -263,6 +284,7 @@ Estilo.configure("TCombobox" ,fieldbackground = "gray",  arrowcolor = "beige" , 
 def Crear_Ventanas_De_Aviso(Valor):
 
     global HAMMING_GLOBAL
+    global BARRA
     global Salida_Informacion
     global CORRECION
     Ventana_Avisos = tk.Toplevel()
@@ -274,6 +296,7 @@ def Crear_Ventanas_De_Aviso(Valor):
     if Valor == 1:
         
         Texto = Entrada_Informacion.get("1.0", "end-1c")
+        
 
         
         if not Texto.strip():
@@ -345,7 +368,7 @@ def Crear_Ventanas_De_Aviso(Valor):
             width=2, height=1, borderwidth=0, relief="flat",
             activebackground="gray30")
             Botoon_Sig.place( x=396, y=122)
-
+            BARRA = 0
             
             Reproducir()
             mostrar_Siguiente()
@@ -401,6 +424,9 @@ def Crear_Ventanas_De_Aviso(Valor):
         
         Animar_Imagen()
         Animar_Texto()
+        if BARRA == 0:
+            Aumentar_barra(20)
+            BARRA += 1
 
 
     elif Valor == 2:
@@ -607,6 +633,9 @@ def Crear_Ventanas_De_Aviso(Valor):
 
             HAMMING_GLOBAL = "".join(LISTA_BITS)
             print(HAMMING_GLOBAL)
+            if BARRA == 1:
+                Aumentar_barra(20)
+                BARRA += 1
             CORRECION = 1
             
     elif Valor == 3:
@@ -688,6 +717,9 @@ def Crear_Ventanas_De_Aviso(Valor):
             Salida_Informacion.delete("1.0" , tk.END) 
             Salida_Informacion.insert(tk.END , HAMMING_GLOBAL)
             Salida_Informacion.config(state = "disabled")
+            if BARRA == 2:
+                Aumentar_barra(20)
+                BARRA += 1
         
             
     elif Valor == 4:
