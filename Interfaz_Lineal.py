@@ -93,31 +93,6 @@ style.configure("Myneon.Vertical.TProgressbar" , troughcolor= "#1a0000" , backgr
 
 
 
-def Crear_Ventana_Dialogo():
-    Ventana_Dialogo = tk.Toplevel()
-    Ventana_Dialogo.title("Diálogo")
-    Ventana_Dialogo.geometry("700x400")
-    Ventana_Dialogo.resizable(False, False)
-    
-
-    fondo33 = Image.open("BI2.png").resize((700, 400))
-    fondo33_tk = ImageTk.PhotoImage(fondo33)
-    fondo33_Label = tk.Label(Ventana_Dialogo, image=fondo33_tk)
-    fondo33_Label.image = fondo33_tk
-    fondo33_Label.place(x=0, y=0, relwidth=1, relheight=1)
-
-    
-    def Cerrar_Ventana():
-        pygame.mixer.music.stop()
-        Ventana_Dialogo.destroy()
-        Ventana_Principal.wm_deiconify()
-        pygame.mixer.music.fadeout(1000)
-        pygame.time.delay(1000)
-        pygame.mixer.music.load("116-bpm-oldschool-electronica-18063.mp3")
-        pygame.mixer.music.play(-1,fade_ms=1000)
-
-    Ventana_Dialogo.protocol("WM_DELETE_WINDOW" , Cerrar_Ventana)
-
     
 
 
@@ -391,7 +366,7 @@ def Crear_Ventanas_De_Aviso(Valor):
         print(HAMMING_GLOBAL)
         CORRECION = 0
 
-        
+        VALIDEZ = True
         #Entrada_Informacion.delete("1.0", tk.END)
 
         
@@ -722,7 +697,7 @@ def Crear_Ventanas_De_Aviso(Valor):
             if BARRA == 2:
                 Aumentar_barra(20)
                 BARRA += 1
-            VALIDEZ = False
+            
         
             
     elif Valor == 4:
@@ -1087,6 +1062,23 @@ def Crear_Ventanas_De_Aviso(Valor):
             Salida_Informacion.insert(tk.END , texto)
             Salida_Informacion.config(state = "disabled")
 
+def REINICIO():
+    global HAMMING_GLOBAL, BARRA, CORRECION, VALIDEZ, progreso_valor
+    HAMMING_GLOBAL = "null"
+    BARRA = 0
+    CORRECION = 0
+    VALIDEZ = True
+    progreso_valor = 0
+    barra_progreso["value"] = progreso_valor
+
+    Entrada_Informacion.delete("1.0" , tk.END)
+
+    Salida_Informacion.config(state = "normal")
+    Salida_Informacion.delete("1.0" , tk.END) 
+    Salida_Informacion.config(state = "disabled")
+
+
+
 
             
 
@@ -1117,7 +1109,7 @@ Cuarto_Boton.pack()
 Quinto_Boton = tk.Button(Doceavo_Frame, image = Img4 ,bg = "dark slate gray" , borderwidth = 2, width= 50 , height = 35, command = lambda: Crear_Ventanas_De_Aviso(4))
 Quinto_Boton.pack()
 
-Sexto_Boton = tk.Button(Frame_13, image = Img5 ,bg = "dark slate gray" , borderwidth = 2, width= 50 , height = 35 , command= Abrir_Ventana_Dialogo)
+Sexto_Boton = tk.Button(Frame_13, image = Img5 ,bg = "dark slate gray" , borderwidth = 2, width= 50 , height = 35 , command= REINICIO)
 Sexto_Boton.pack()
 
 
