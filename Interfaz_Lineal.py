@@ -9,6 +9,7 @@ from playsound import playsound
 HAMMING_GLOBAL = "null"
 CORRECION = 0
 BARRA = 0
+VALIDEZ = True
 
 
 
@@ -285,6 +286,7 @@ def Crear_Ventanas_De_Aviso(Valor):
 
     global HAMMING_GLOBAL
     global BARRA
+    global VALIDEZ
     global Salida_Informacion
     global CORRECION
     Ventana_Avisos = tk.Toplevel()
@@ -720,6 +722,7 @@ def Crear_Ventanas_De_Aviso(Valor):
             if BARRA == 2:
                 Aumentar_barra(20)
                 BARRA += 1
+            VALIDEZ = False
         
             
     elif Valor == 4:
@@ -978,6 +981,7 @@ def Crear_Ventanas_De_Aviso(Valor):
                     bits[syndrome - 1] ^= 1
                     bloque_corregido = ''.join(map(str, bits))
                     bloques_corregidos.append(bloque_corregido)
+                    VALIDEZ = True
         else:
             bloques_corregidos.append(bloque)
                 
@@ -988,8 +992,100 @@ def Crear_Ventanas_De_Aviso(Valor):
         Salida_Informacion.insert(tk.END , HAMMING_GLOBAL)
         Salida_Informacion.config(state = "disabled")
 
-        
-        
+    elif Valor == 5:
+
+        if VALIDEZ == False:
+            Ventana_Principal.withdraw()
+            Ventana_Avisos.geometry("450x150")
+            fondo34 = Image.open("BI4 (2).png").resize((450, 150))
+            fondo34_tk = ImageTk.PhotoImage(fondo34)
+            fondo34_Label = tk.Label(Ventana_Avisos, image=fondo34_tk)
+            fondo34_Label.image = fondo34_tk
+            fondo34_Label.place(x=0, y=0, relwidth=1, relheight=1)
+
+            def Cerra_Aviso():
+                Ventana_Avisos.destroy()
+                Ventana_Principal.wm_deiconify()
+
+            Ventana_Avisos.protocol("WM_DELETE_WINDOW" , Cerra_Aviso)
+
+            Frame1_Gif = tk.Frame(Ventana_Avisos, bg = "gray" , width= 150 , height = 130)
+            Frame1_Gif.place(x = 10, y = 10)
+
+            gif1 = Image.open("Tomas.gif")
+
+            Personaje_GIF = tk.PhotoImage("Tomas.gif")
+            Label_NPC = tk.Label(Frame1_Gif, image = Personaje_GIF, bg = "purple")
+            Label_NPC.image = Personaje_GIF
+            Label_NPC.pack(expand =True)
+
+            def Reproducir1(frame = 0):
+                gif1.seek(frame)
+                Fotogramas = ImageTk.PhotoImage(gif1.copy())
+                Label_NPC.config(image = Fotogramas)
+                Label_NPC.image = Fotogramas
+
+                frame = (frame + 1) % gif1.n_frames
+                Ventana_Avisos.after(100, Reproducir1, frame)
+
+            Framee_Texto = tk.Frame(Ventana_Avisos, bg="gray", width=265, height=85, bd = 2, relief = "ridge")
+            Framee_Texto.place(x=155, y=56) 
+
+            Mensajes = ["Todo bien, Cyber usuario..." , "Veo que intentas decodificar un mensaje con errores..." ,
+                 "Esto no es posible..."      
+                ]
+            
+            indice = [0]
+
+
+            Textoo_Label = tk.Label(Framee_Texto, text="", font=("Century Gothic", 10 , "bold"),fg="black", bg="gray", justify="left", wraplength=250)
+            Textoo_Label.place(x=10, y=15)
+
+            def Animaar_Texto(texto, i=0):
+                if i <= len(texto):
+                    Textoo_Label.config(text=texto[:i])
+                    Ventana_Avisos.after(40, lambda: Animaar_Texto(texto, i + 1))
+
+            def mostrar_Siguiente():
+                if indice[0] < len(Mensajes):
+                    Animaar_Texto(Mensajes[indice[0]])
+                    indice[0] += 1
+                else:
+                    Textoo_Label.config(text="Por favor corrige los errores oprimiendo el botón corregir.")
+                
+            Botoon_Sig = tk.Button(
+            Ventana_Avisos, text="▶", command=mostrar_Siguiente,
+            bg="gray20", fg="white", font=("Arial", 10, "bold"),
+            width=2, height=1, borderwidth=0, relief="flat",
+            activebackground="gray30")
+            Botoon_Sig.place( x=400, y=122)
+
+            Reproducir1()
+            mostrar_Siguiente()
+
+        elif VALIDEZ == True:
+            Ventana_Avisos.destroy()
+            if BARRA == 3:
+                Aumentar_barra(40)
+                BARRA += 1
+            bloques = [HAMMING_GLOBAL[i:i+7] for i in range (0,len(HAMMING_GLOBAL), 7)] 
+            datos_binarios = ""
+
+            for bloque in bloques:
+                if len(bloque) == 7:
+                    datos = bloque[2] + bloque[4] + bloque[5] + bloque[6]
+                    datos_binarios += datos
+
+            texto = ""
+            for i in range(0, len(datos_binarios) , 8):
+                byte = datos_binarios[i:i+8]
+                if len(byte) == 8:
+                    texto += chr(int(byte,2))
+
+            Salida_Informacion.config(state = "normal")
+            Salida_Informacion.delete("1.0" , tk.END) 
+            Salida_Informacion.insert(tk.END , texto)
+            Salida_Informacion.config(state = "disabled")
 
 
             
@@ -1015,7 +1111,7 @@ Segundo_Boton.pack()
 Tercer_Boton = tk.Button(Noveno_Frame, text = "Insertar", font = ("Century Gothic ", 10 , "bold") , fg = "beige" , bg = "gray" , borderwidth= 3, width= 13, command = lambda: Crear_Ventanas_De_Aviso(3) )
 Tercer_Boton.pack()
 
-Cuarto_Boton = tk.Button(Onceavo_Frame, image = Img3 ,bg = "dark slate gray" , borderwidth = 2, width= 50 , height = 35 )
+Cuarto_Boton = tk.Button(Onceavo_Frame, image = Img3 ,bg = "dark slate gray" , borderwidth = 2, width= 50 , height = 35, command = lambda: Crear_Ventanas_De_Aviso(5) )
 Cuarto_Boton.pack()
 
 Quinto_Boton = tk.Button(Doceavo_Frame, image = Img4 ,bg = "dark slate gray" , borderwidth = 2, width= 50 , height = 35, command = lambda: Crear_Ventanas_De_Aviso(4))
