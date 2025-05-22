@@ -867,7 +867,133 @@ def Crear_Ventanas_De_Aviso(Valor):
             Reproducir()
             mostrar_Siguiente()
 
-       # elif HAMMING_GLOBAL != "null" and CORRECION == 1:
+        elif HAMMING_GLOBAL != "null" and CORRECION == 1:
+            Ventana_Avisos.destroy()
+            bloques = [HAMMING_GLOBAL[i:i + 7] for i in range(0, len(HAMMING_GLOBAL), 7)]
+            bloques_corregidos = []
+            error_no_corregible = False
+            errores_detectados = 0
+
+            for bloque in bloques:
+                if len(bloque) < 7:
+                    continue
+
+        
+                bits = list(map(int, bloque))
+
+        
+                p1, p2, d1, p3, d2, d3, d4 = bits
+
+        
+                s1 = p1 ^ d1 ^ d2 ^ d4
+                s2 = p2 ^ d1 ^ d3 ^ d4
+                s3 = p3 ^ d2 ^ d3 ^ d4
+
+        
+                syndrome = s1 * 1 + s2 * 2 + s3 * 4
+
+                if syndrome == 0:
+            
+                    bloques_corregidos.append(bloque)
+                elif 1 <= syndrome <= 7:
+                    errores_detectados += 1
+                    if errores_detectados > 1:
+                        Ventana_Avisos1 = tk.Toplevel()
+                        Ventana_Avisos1.title("AVISO")
+                        Ventana_Principal.withdraw()
+                        Ventana_Avisos1.geometry("450x150")
+                        fondo34 = Image.open("BI4.png").resize((450, 150))
+                        fondo34_tk = ImageTk.PhotoImage(fondo34)
+                        fondo34_Label = tk.Label(Ventana_Avisos1, image=fondo34_tk)
+                        fondo34_Label.image = fondo34_tk
+                        fondo34_Label.place(x=0, y=0, relwidth=1, relheight=1)
+
+                        def Cerra_Aviso():
+                            Ventana_Avisos1.destroy()
+                            Ventana_Principal.wm_deiconify()
+
+                        Ventana_Avisos1.protocol("WM_DELETE_WINDOW" , Cerra_Aviso)
+                            
+                        Frame_Gif = tk.Frame(Ventana_Avisos1, bg = "gray" , width= 150 , height = 130)
+                        Frame_Gif.place(x = 10, y = 10)
+
+                        gif = Image.open("Sebas (1).gif")
+
+                        Personaje_GIF = tk.PhotoImage("Sebas (1).gif")
+                        Label_NPC = tk.Label(Frame_Gif, image = Personaje_GIF, bg = "red")
+                        Label_NPC.image = Personaje_GIF
+                        Label_NPC.pack(expand =True)
+
+                        def Reproducir(frame = 0):
+                            gif.seek(frame)
+                            Fotogramas = ImageTk.PhotoImage(gif.copy())
+                            Label_NPC.config(image = Fotogramas)
+                            Label_NPC.image = Fotogramas
+
+                            frame = (frame + 1) % gif.n_frames
+                            Ventana_Avisos1.after(100, Reproducir, frame)
+
+            
+                        Framee_Texto = tk.Frame(Ventana_Avisos1, bg="gray", width=265, height=85, bd = 2, relief = "ridge")
+                        Framee_Texto.place(x=155, y=56)  # Ajustado para quedar justo al lado del GIF
+
+                        mensajes = [
+                            "Que chimba volverte a ver, Cyber usuario...",
+                            "Veo que ya estás comprendiendo cómo funciona este programa...",
+                            "Has integrado más de un error..." , "pero ahora mismo contamos con HAMMING (7,4)..." ,
+                            "Por lo cual solo podemos corregir un error a la vez..." 
+                        ]
+                        indice = [0]
+
+
+                        Textoo_Label = tk.Label(Framee_Texto, text="", font=("Century Gothic", 10 , "bold"),fg="black", bg="gray", justify="left", wraplength=250)
+                        Textoo_Label.place(x=10, y=15)
+
+                        def Animaar_Texto(texto, i=0):
+                            if i <= len(texto):
+                                Textoo_Label.config(text=texto[:i])
+                                Ventana_Avisos1.after(40, lambda: Animaar_Texto(texto, i + 1))
+
+                        def mostrar_Siguiente():
+                            if indice[0] < len(mensajes):
+                                Animaar_Texto(mensajes[indice[0]])
+                                indice[0] += 1
+                            else:
+                                Textoo_Label.config(text="Estamos trabajando para actualizar nuestro código HAMMING.")
+
+
+                        Botoon_Sig = tk.Button(
+                        Ventana_Avisos1, text="▶", command=mostrar_Siguiente,
+                        bg="gray20", fg="white", font=("Arial", 10, "bold"),
+                        width=2, height=1, borderwidth=0, relief="flat",
+                        activebackground="gray30")
+                        Botoon_Sig.place( x=400, y=122)
+
+                        Reproducir()
+                        mostrar_Siguiente()
+                        return  
+
+
+
+                    bits[syndrome - 1] ^= 1
+                    bloque_corregido = ''.join(map(str, bits))
+                    bloques_corregidos.append(bloque_corregido)
+        else:
+            bloques_corregidos.append(bloque)
+                
+        HAMMING_GLOBAL = ''.join(bloques_corregidos)
+
+        Salida_Informacion.config(state = "normal")
+        Salida_Informacion.delete("1.0" , tk.END) 
+        Salida_Informacion.insert(tk.END , HAMMING_GLOBAL)
+        Salida_Informacion.config(state = "disabled")
+
+        
+        
+
+
+            
+
 
 
 
